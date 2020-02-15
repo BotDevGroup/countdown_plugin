@@ -66,7 +66,7 @@ class CountdownPlugin(Plugin):
 
             results.append(new)
 
-        return results
+        return results[:3]
 
     def http(self, search=""):
         with requests.Session() as s:
