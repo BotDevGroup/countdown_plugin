@@ -63,7 +63,7 @@ class CountdownPlugin(Plugin):
             new['title'] = item.p.text
             new['img'] = "{}{}".format(self.config.get('base_url'), item.find('a', class_='countdown-block')['data-src'])
             new['countdown'] = "{} *DAYS* {} *HOURS* {} *MINS*".format(*strfdelta(difference))
-
+            new['display'] = False if difference.days < 0 else True
             results.append(new)
 
         return results[:3]
@@ -86,7 +86,7 @@ class CountdownPlugin(Plugin):
 
                 if len(results) > 0:
                     for item in results:
-                        msg = "*Name:* {}\n*Title:* {}\n{}".format(item['name'], item['title'], item['countdown'])
+                        msg = "*Name:* {}\n*Title:* {}\n{}".format(item['name'], item['title'], item['countdown']) if item['display'] else "Go watch it!"
                         self.adapter.bot.sendPhoto(chat_id=message.chat_id, photo=item['img'], caption=msg, parse_mode='Markdown')
                     return
                 else:
