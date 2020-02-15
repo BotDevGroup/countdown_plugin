@@ -53,6 +53,7 @@ class CountdownPlugin(Plugin):
 
         for item in html_soup.find_all('div', class_='countdown-item'):
             countdown = item.find('div', class_='countdown')
+            if not countdown['data-timezone']: countdown['data-timezone'] = "0"
             future = datetime.strptime(countdown['data-date'], date_format) - timedelta(hours = float(countdown['data-timezone']))
             present = datetime.utcnow()
             difference = future - present
