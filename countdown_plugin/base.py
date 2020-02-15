@@ -33,7 +33,7 @@ class CountdownPlugin(Plugin):
 
     def setup_handlers(self, adapter):
         self.bot = adapter.bot
-        self.add_handler(CommandHandler('count', self.on_countdown_command, command_description='Search the countdown of series or movies. https://yourcountdown.io'))
+        self.add_handler(CommandHandler('countdown', self.on_countdown_command, command_description='Search the countdown of series or movies. https://yourcountdown.io'))
 
     def setup_schedules(self, adapter):
         pass
@@ -62,7 +62,7 @@ class CountdownPlugin(Plugin):
             new['name'] = item.h4.text
             new['title'] = item.p.text
             new['img'] = "{}{}".format(self.config.get('base_url'), item.find('a', class_='countdown-block')['data-src'])
-            new['countdown'] = "*DAYS:* {} *HOURS:* {} *MINS:* {} *SECS:* {}".format(*strfdelta(difference))
+            new['countdown'] = "{} *DAYS* {} *HOURS* {} *MINS*".format(*strfdelta(difference))
 
             results.append(new)
 
@@ -90,12 +90,12 @@ class CountdownPlugin(Plugin):
                         self.adapter.bot.sendPhoto(chat_id=message.chat_id, photo=item['img'], caption=msg, parse_mode='Markdown')
                     return
                 else:
-                    msg = "❌ the serie or movie not found."
+                    msg = "❌ Found 0 countdown."
             else:
-                msg = "‼️ Use: /count <serie|movie>"
+                msg = "‼️ Use: /countdown <serie|movie>"
         except Exception as err:
             log.error("Countdown error: {}".format(err))
-            msg = "❌ error ocurreted."
+            msg = "❌ Unable to fetch countdown information."
             traceback.print_exc()
 
         self.adapter.bot.sendMessage(chat_id=message.chat_id, text=msg, parse_mode='Markdown', disable_web_page_preview = True)
