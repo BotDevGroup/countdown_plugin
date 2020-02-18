@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 
 class CountdownPlugin(Plugin):
     def __init__(self):
-        super(CountdownPlugin, self).__init__('countdown_rae_plugin')
+        super(CountdownPlugin, self).__init__('countdown_plugin')
         self.bot = None
 
     def get_default_config(self):
