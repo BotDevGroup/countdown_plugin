@@ -42,8 +42,8 @@ class CountdownPlugin(Plugin):
         def strfdelta(tdelta):
             (h, r) = divmod(tdelta.seconds, 3600)
             (m, s) = divmod(r, 60)
-            d = tdelta.days if tdelta.days else 0
-            return [d, h, m, s]
+            (y, d) = divmod(tdelta.days, 365) if tdelta.days else (0, 0)
+            return [y, d, h, m, s]
 
         date_format = '%Y-%m-%d %H:%M:%S'    
         response.encoding = "utf-8"
@@ -57,12 +57,14 @@ class CountdownPlugin(Plugin):
             future = datetime.strptime(countdown['data-date'], date_format) - timedelta(hours = float(countdown['data-timezone']))
             present = datetime.utcnow()
             difference = future - present
+            delta = strfdelta(difference)
 
             new = {}
             new['name'] = item.h4.text
             new['title'] = item.p.text
             new['img'] = "{}{}".format(self.config.get('base_url'), item.find('a', class_='countdown-block')['data-src'])
-            new['countdown'] = "{} *DAYS* {} *HOURS* {} *MINS*".format(*strfdelta(difference))
+            new['countdown'] = "{} *YEARS* ".format(delta[0]) if delta[0] > 0 else ""
+            new['countdown'] += "{} *DAYS* {} *HOURS* {} *MINS*".format(*delta[1:])
             new['display'] = False if difference.days < 0 else True
             results.append(new)
 
